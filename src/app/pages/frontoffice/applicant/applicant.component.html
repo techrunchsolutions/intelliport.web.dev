@@ -1,0 +1,173 @@
+<!-- start page title -->
+<app-pagetitle title="{{ pageitem }}" [breadcrumbItems]="breadCrumbItems"></app-pagetitle>
+<!-- end page title -->
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12"> 
+                        <h4 class="card-title">{{ pageitem }} Records</h4>
+                        <p class="card-sub-title">
+                            The underlisted records are for applicant who have appointment for today. Enter applicant information on the search box provided on the right to look for specific applicant
+                        </p> 
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12"> 
+                        <!-- Search -->
+                        <div class="form-check form-switch form-switch-md mt-2 ms-1" dir="ltr">
+                            <input class="form-check-input" style="cursor: pointer;" type="checkbox" id="SwitchCheckSizemd" (click)=toggleSearch()>
+                            <p class="card-title-desc mb-3">Search with specific information</p>
+                        </div>
+
+                        <div [hidden]="hidesearch" class="row">
+                            <div class="col-sm-4 col-md-4 text-md-start">
+                                <div class="row">
+                                    <div class="col-sm-8 col-md-8 text-md-start">
+                                        <input type="text" name="searchApplicant" placeholder="e.g. surname, firstname or middlename" autocomplete="false" 
+                                            class="form-control form-control-sm me-2" [(ngModel)]="service.searchParam" (ngModelChange)="getKeyDown(true)">
+                                    </div>
+                                    <div class="col-sm-2 col-md-2 text-md-start">
+                                        <div *ngIf="service.sprogress" class="spinner-border text-primary" role="status" >
+                                            <span class="sr-only">Loading...</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2 col-md-2 text-md-start"></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-8 col-md-8 text-md-end">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-12 text-md-end">
+                                        <button type="button" class="btn btn-outline-primary btn-rounded px-1 w-md btn-sm">Advance Search</button> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="text-primary1111">
+
+                <div class="row mb-md-2">
+                    <div class="col-sm-12 col-md-4">
+                        <div class="dataTables_length" id="tickets-table_length"><label
+                                class="d-inline-flex align-items-center">Show
+                                <select name="tickets-table_length" aria-controls="tickets-table" name="pageSize"
+                                    [(ngModel)]="service.pageSize" class="form-control form-control-sm mx-2">
+                                    <option [ngValue]="10">10</option>
+                                    <option [ngValue]="25">25</option>
+                                    <option [ngValue]="50">50</option>
+                                    <option [ngValue]="100">100</option>
+                                </select> entries</label></div>
+                    </div>
+                    <div class="col-sm-12 col-md-4 text-md-center">
+                        <div *ngIf="service.lprogress" class="spinner-border text-primary" role="status" >
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <!-- Search -->
+                    <div class="col-sm-12 col-md-4">
+                        <div id="tickets-table_filter" class="dataTables_filter text-md-end"><label
+                                class="d-inline-flex align-items-center">Search:
+                                <input type="text" name="searchTerm" class="form-control form-control-sm ms-2" placeholder="e.g. national id (NIN)"
+                                    aria-controls="tickets-table" [(ngModel)]="service.searchTerm"></label></div>
+                    </div>
+                    <!-- End search -->
+                </div>
+                <!-- Table -->
+                <div class="table-responsive">
+                    <table id="basic-datatable"
+                        class="table table-bordered dt-responsive nowrap datatables no-footer dtr-inline">
+                        <thead>
+                            <tr> 
+                                <th sortable="nationalId" (sort)="onSort($event)">National Id</th>
+                                <th sortable="surname" (sort)="onSort($event)">Surname</th>   
+                                <th sortable="firstName" (sort)="onSort($event)">First Name</th>
+                                <th sortable="middleName" (sort)="onSort($event)">Middle Name</th>
+                                <th sortable="gender" (sort)="onSort($event)">Gender</th>
+                                <th sortable="birthDate" (sort)="onSort($event)">Birth Date</th>
+                                <th sortable="nationality" (sort)="onSort($event)">Nationality</th>
+                                <th sortable="birthState" (sort)="onSort($event)">Birth State</th>
+                                <th sortable="appStatus" (sort)="onSort($event)">Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody *ngFor="let applicant of applicants$ | async;let i=index">
+                            <tr>
+                                <td>
+                                    <ngb-highlight [result]="applicant.nationalId" [term]="service.searchTerm"></ngb-highlight>
+                                </td>
+                                <td>
+                                    <ngb-highlight [result]="applicant.surname" [term]="service.searchTerm"></ngb-highlight>
+                                </td>
+                                <td>
+                                    <ngb-highlight [result]="applicant.firstName" [term]="service.searchTerm"></ngb-highlight>
+                                </td>
+                                <td>
+                                    <ngb-highlight [result]="applicant.middleName" [term]="service.searchTerm"></ngb-highlight>
+                                </td>
+                                <td>
+                                    <ngb-highlight [result]="applicant.gender" [term]="service.searchTerm"></ngb-highlight>
+                                </td>
+                                <td>
+                                    <ngb-highlight [result]="applicant.birthDate | date:'MM/dd/yyyy'" [term]="service.searchTerm"></ngb-highlight>
+                                </td>
+                                <td>
+                                    <ngb-highlight [result]="applicant.nationality" [term]="service.searchTerm"></ngb-highlight>
+                                </td>
+                                <td>
+                                    <ngb-highlight [result]="applicant.birthState" [term]="service.searchTerm"></ngb-highlight>
+                                </td>
+                                <td>
+                                    <ngb-highlight [ngClass]="getAppStatusClass(applicant.appStatus)" [result]="applicant.appStatus" [term]="service.searchTerm"></ngb-highlight>
+                                </td>
+                                <td (mouseover)="getMouseOver(9000)" (mouseleave)="getMouseLeave(200)">
+                                    <div class="dropdown" ngbDropdown>
+                                        <a class="text-muted dropdown-toggle font-size-18 px-2"
+                                            href="javascript:void(0);" role="button"
+                                            data-bs-toggle="dropdown" ngbDropdownToggle
+                                            aria-haspopup="true">
+                                            <i class="mdi mdi-dots-vertical"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
+                                            <a *ngIf="personinfo" routerLink="/applicant/profile" [state]="{ data: applicant.id }" class="dropdown-item">View Details</a>
+                                            <div [hidden] = "true" class="dropdown-divider"></div>
+                                            <a routerLink="/frontoffice/register/biodata" [state]="{ data: applicant.id }" class="dropdown-item" [hidden] = "!register">Register Applicant</a>
+                                            <div [hidden] = "true" class="dropdown-divider"></div>
+                                            <a routerLink="/frontoffice/enrolment/capture" [state]="{ data: applicant.id }" class="dropdown-item" [hidden] = "!enroll">Enroll Biometric</a>
+                                            <!--<div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="javascript: void(0);">Passed</a>-->
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- End table -->
+                <div class="row justify-content-md-between align-items-md-center mt-2">
+                    <div class="col-sm-12 col-md-5">
+                        <div class="dataTables_info mb-2" id="tickets-table_info" role="status" aria-live="polite">
+                            Showing
+                            {{service.startIndex}} to
+                            {{service.endIndex}} of {{service.totalRecords}}
+                            entries
+                        </div>
+                    </div>
+                    <!-- Pagination -->
+                    <div class="col-sm-12 col-md-5">
+                        <div class="text-md-right float-md-end pagination-rounded">
+                            <ngb-pagination [collectionSize]="(total$ | async)!" [(page)]="service.page"
+                                [pageSize]="service.pageSize">
+                            </ngb-pagination>
+                        </div>
+                    </div>
+                    <!-- End Pagination -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

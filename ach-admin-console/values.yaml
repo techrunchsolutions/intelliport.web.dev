@@ -1,0 +1,96 @@
+---
+replicaCount: 1
+image:
+  repository: 962441259158.dkr.ecr.eu-west-1.amazonaws.com/ach-admin-console
+  pullPolicy: IfNotPresent
+  tag: ""
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+podAnnotations: {}
+podSecurityContext: {}
+securityContext: {}
+service:
+  type: LoadBalancer
+  port: 80
+ingress:
+  enabled: false
+  className: ingress-nginx
+  annotations:
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/auth-url: ""
+    nginx.ingress.kubernetes.io/backend-protocol: HTTP
+  hosts:
+    - host: ach-admin-console.redpay.africa
+      paths:
+        - path: /
+          pathType: Prefix
+          defaultBackend:
+            service:
+              name: ach-admin-console
+              port:
+                number: 8080
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: admin-service
+              port:
+                number: 9300
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: analytic-service
+              port:
+                number: 9500
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: external-gateway
+              port:
+                number: 8200
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: identity-server
+              port:
+                number: 9200
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: identity-service
+              port:
+                number: 9500
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: internal-gateway
+              port:
+                number: 8300
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: ach-saas
+              port:
+                number: 9600
+  tls: []
+resources: {}
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+nodeSelector: {}
+tolerations: []
+affinity: {}

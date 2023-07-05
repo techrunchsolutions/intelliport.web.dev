@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "ach-admin-console.fullname" . }}-test-connection"
+  labels:
+    {{- include "ach-admin-console.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "ach-admin-console.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never
